@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class CellUnit : MonoBehaviour
 {
@@ -25,8 +26,13 @@ public class CellUnit : MonoBehaviour
     {
         if (canBeTargeted)
         {
-            cellMaterial.color = Color.green;
-            PlayerController.targetCell = gameObject;
+            
+            Vector3 distanceWithPlayer = transform.position - PlayerController.playerPosition;
+            if (Math.Abs(distanceWithPlayer.x) + Math.Abs(distanceWithPlayer.z) <= PlayerController.playerMovementDistance)
+            {
+                cellMaterial.color = Color.green;
+                PlayerController.targetCell = gameObject;
+            }
         }
     }
 
@@ -42,7 +48,6 @@ public class CellUnit : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Obstacle"))
         {
-            Debug.Log(gameObject.name + "Can't be targeted because there is an Obstcale");
             canBeTargeted = false;
         }
     }
