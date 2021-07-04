@@ -16,7 +16,7 @@ public class CellUnit : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     private void OnMouseEnter()
@@ -39,7 +39,7 @@ public class CellUnit : MonoBehaviour
 
     private void OnMouseExit()
     {
-       cellMaterial.color = new Color(1, 0.4622955f, 0.25f, 0.6f);
+        cellMaterial.color = new Color(1, 0.4622955f, 0.25f, 0.6f);
     }
 
     private void OnTriggerEnter(Collider other)
