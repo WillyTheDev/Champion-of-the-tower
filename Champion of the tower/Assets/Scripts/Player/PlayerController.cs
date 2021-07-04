@@ -29,19 +29,21 @@ public class PlayerController : MonoBehaviour
     public static Vector3 playerPosition;
     private static bool playerIsMoving;
 
+    private List<Vector3> path;
     private int xOffset;
     private int zOffset;
+    public int xSteps;
+    public int zSteps;
 
     void Start()
     {
+        print("Sart Method is Launched");
         playerPosition = transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        IsThereAnObstacleOnPath();
         //When Mouse Button is pressed the last cell will be targeted as the next position
         if (Input.GetMouseButtonDown(0) && targetCell != null && !playerIsMoving)
         {
@@ -51,13 +53,16 @@ public class PlayerController : MonoBehaviour
             // Offsets are used to determine if the movement will be negative or positive.
             xOffset = Convert.ToInt16(selectedCell.transform.position.x - transform.position.x);
             zOffset = Convert.ToInt16(selectedCell.transform.position.z - transform.position.z);
+            print("xOffset: " + xOffset + " zOffset :" + zOffset);
+            zSteps = Math.Abs(zOffset / 5);
+            xSteps = Math.Abs(xOffset / 5);
             playerIsMoving = true;
-            
         }
-        if (playerIsMoving)
-        {
+        if (playerIsMoving) {
             MovePlayerToSelectedCell(xOffset, zOffset);
         }
+            
+        
     }
 
     public static bool IsThereAnObstacleOnPath()
@@ -80,45 +85,59 @@ public class PlayerController : MonoBehaviour
     private void MovePlayerToSelectedCell(int xOffset, int zOffset)
     {
         //Steps will be use in further development
-        int zStep = Math.Abs(zOffset / 5);
-        int xStep = Math.Abs(xOffset / 5);
+        
 
+        bool isGoingUp = zOffset > 0;
+        bool isGoingRight = xOffset > 0;
+        Debug.Log("Player is moving right: " + isGoingRight);
+        Debug.Log("Player is moving up: " + isGoingUp);
         RaycastHit hit;
 
-        if (
-            Physics.Raycast(transform.position, transform.right, out hit, 5)
-            || Physics.Raycast(transform.position, transform.right, out hit, -5)
-            || Physics.Raycast(transform.position, transform.forward, out hit, 5)
-            || Physics.Raycast(transform.position, transform.right, out hit, -5)
-            )
+        //if (
+        //    Physics.Raycast(transform.position, transform.right, out hit, 5)
+        //    || Physics.Raycast(transform.position, transform.right, out hit, -5)
+        //    || Physics.Raycast(transform.position, transform.forward, out hit, 5)
+        //    || Physics.Raycast(transform.position, transform.right, out hit, -5)
+        //    )
+        //    {
+        //        if (hit.collider.CompareTag("Obstacle"))
+        //        {
+        //            if(hit.transform.position.z - transform.position.z <= 5 || hit.transform.position.z - transform.position.z >= -5)
+        //            {
+                        
+        //            }   
+        //        }
+        //    }
+        //else
+        //    {
+            if (zSteps > 0)
             {
-                if (hit.collider.CompareTag("Obstacle"))
+                Debug.Log("Move Player on Z axis");
+                Debug.Log("Goal z position: " + playerPosition.z + 5);
+                if (isGoingUp ? transform.position.z <= playerPosition.z + 5 : transform.position.z >= playerPosition.z - 5)
                 {
-                    if(hit.transform.position.z - transform.position.z <= 5 || hit.transform.position.z - transform.position.z >= -5)
-                    {
-                    if (xOffset < 0 ? transform.position.x >= selectedCell.transform.position.x : transform.position.x <= selectedCell.transform.position.x)
-                    {
-                        transform.Translate(Vector3.right * Time.deltaTime * (xOffset < 0 ? -1 : 1) * speed);
-                    }
+                    Debug.Log("Translating on Z axis");
+                    transform.Translate(Vector3.forward * Time.deltaTime * (isGoingUp ? 1 : -1) * speed);
                     
-                    }
-                    else
-                    {
-                    if (zOffset < 0 ? transform.position.z >= selectedCell.transform.position.z : transform.position.z <= selectedCell.transform.position.z)
-                    {
-                        transform.Translate(Vector3.forward * Time.deltaTime * (zOffset < 0 ? -1 : 1) * speed);
-                    }
-                }  
+                } else
+                {
+                    zSteps--;
                 }
-        }
-        else
-        {
-                // Center the Player position in the Cell and Stopping the movement.
-                transform.position = selectedCell.transform.position + new Vector3(0, 2, 0);
-                playerPosition = transform.position;
-                playerIsMoving = false;
+            } else if (xSteps > 0) {
+                Debug.Log("Move Player on X Axis");
+                Debug.Log("Goal x position: " + playerPosition.x + 5);
+                Debug.Log("xSteps credit : " + xSteps);
+                if (isGoingRight ? transform.position.x <= playerPosition.x + 5: transform.position.x >= playerPosition.x - 5)
+                {
+                    Debug.Log("Translating on X axis");
+                    transform.Translate(Vector3.right * Time.deltaTime * (isGoingRight ? 1 : -1) * speed);
+                    
+                } else
+                {
+                    xSteps--;
+                }
             }
-        
+
     }
     
 
