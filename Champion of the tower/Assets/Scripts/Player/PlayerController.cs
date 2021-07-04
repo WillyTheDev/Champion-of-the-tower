@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
 
-        
+        IsThereAnObstacleOnPath();
         //When Mouse Button is pressed the last cell will be targeted as the next position
         if (Input.GetMouseButtonDown(0) && targetCell != null && !playerIsMoving)
         {
@@ -60,27 +60,65 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-   
+    public static bool IsThereAnObstacleOnPath()
+    {
+        RaycastHit hit;
+        Debug.DrawRay(playerPosition, (targetCell.transform.position - playerPosition) * 15, Color.blue);
+        if (Physics.Raycast(playerPosition, targetCell.transform.position - playerPosition, out hit, 15))
+        {
+            if (hit.collider.CompareTag("Obstacle"))
+            {
+                Debug.Log("There is an obstacle on the path");
+                return true;
+            }
+        }
+        return false;
+    }
+
+    
+
     private void MovePlayerToSelectedCell(int xOffset, int zOffset)
     {
         //Steps will be use in further development
         int zStep = Math.Abs(zOffset / 5);
         int xStep = Math.Abs(xOffset / 5);
 
-        //First we will move forward or downward and then right or left.
-        if(zOffset < 0 ? transform.position.z >= selectedCell.transform.position.z : transform.position.z <= selectedCell.transform.position.z)
-        {
-            transform.Translate(Vector3.forward * Time.deltaTime * (zOffset < 0 ? -1 : 1) * speed);
-        } else if (xOffset < 0 ? transform.position.x >= selectedCell.transform.position.x : transform.position.x <= selectedCell.transform.position.x)
-        {
-            transform.Translate(Vector3.right * Time.deltaTime * (xOffset < 0 ? -1 : 1) * speed);
-        } else
-        {
-            // Center the Player position in the Cell and Stopping the movement.
-            transform.position = selectedCell.transform.position + new Vector3(0, 2, 0);
-            playerPosition = transform.position;
-            playerIsMoving = false;
+        RaycastHit hit;
+
+        if (
+            Physics.Raycast(transform.position, transform.right, out hit, 5)
+            || Physics.Raycast(transform.position, transform.right, out hit, -5)
+            || Physics.Raycast(transform.position, transform.forward, out hit, 5)
+            || Physics.Raycast(transform.position, transform.right, out hit, -5)
+            )
+            {
+                if (hit.collider.CompareTag("Obstacle"))
+                {
+                    if(hit.transform.position.z - transform.position.z <= 5 || hit.transform.position.z - transform.position.z >= -5)
+                    {
+                    if (xOffset < 0 ? transform.position.x >= selectedCell.transform.position.x : transform.position.x <= selectedCell.transform.position.x)
+                    {
+                        transform.Translate(Vector3.right * Time.deltaTime * (xOffset < 0 ? -1 : 1) * speed);
+                    }
+                    
+                    }
+                    else
+                    {
+                    if (zOffset < 0 ? transform.position.z >= selectedCell.transform.position.z : transform.position.z <= selectedCell.transform.position.z)
+                    {
+                        transform.Translate(Vector3.forward * Time.deltaTime * (zOffset < 0 ? -1 : 1) * speed);
+                    }
+                }  
+                }
         }
+        else
+        {
+                // Center the Player position in the Cell and Stopping the movement.
+                transform.position = selectedCell.transform.position + new Vector3(0, 2, 0);
+                playerPosition = transform.position;
+                playerIsMoving = false;
+            }
+        
     }
     
 
