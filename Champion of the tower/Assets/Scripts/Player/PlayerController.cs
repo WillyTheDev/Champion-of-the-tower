@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
     public static GameObject targetCell;
 
     public float speed = 20;
-    private static int m_playerMovementDistance = 20;
+    private static int m_playerMovementDistance = 15;
     public static int playerMovementDistance {
         get { return m_playerMovementDistance; }
         set {
@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                m_playerMovementDistance = 20;
+                m_playerMovementDistance = 15;
                 Debug.Log("Value can't be divised by 5!");
             }
         }
