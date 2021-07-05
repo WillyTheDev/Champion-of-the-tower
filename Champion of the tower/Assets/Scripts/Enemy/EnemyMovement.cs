@@ -7,28 +7,32 @@ public class EnemyMovement : MonoBehaviour
 {
     // Start is called before the first frame update
     public int speed = 20;
-
+    public static int enemyMovementPoint;
     private int xOffset;
     private int zOffset;
+    private bool xPriority;
     private bool directionShouldBeRight;
-
+    private Vector3 targetPosition;
+    private Vector3 enemyInitialPosition;
     private bool enemyIsMoving;
 
 
     void Start()
     {
-        
+        enemyInitialPosition = transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (TurnSystem.isEnemyTurn && !enemyIsMoving)
+        if (TurnSystem.isEnemyTurn && !enemyIsMoving && enemyMovementPoint > 0)
         {
             
             Debug.DrawLine(transform.position, PlayerMovement.playerPosition, Color.cyan);
             xOffset = Convert.ToInt16(PlayerMovement.playerPosition.x - transform.position.x);
             zOffset = Convert.ToInt16(PlayerMovement.playerPosition.z - transform.position.z);
+            xPriority = (xOffset * (xOffset > 0 ? 1 : -1)) > (zOffset * (zOffset > 0 ? 1 : -1));
+            targetPosition = enemyInitialPosition + new Vector3(5 * (xPriority? 2 : 1) * (xOffset > 0 ? 1 : -1), 0, 5 * (xPriority ? 1 : 2) * (zOffset > 0 ? 1 : -1));
 
             RaycastHit hitForward;
             RaycastHit hitRight;
@@ -48,6 +52,12 @@ public class EnemyMovement : MonoBehaviour
                     directionShouldBeRight = false;
                 }
             }
+
+            
+  
+                
+            
+
             enemyIsMoving = true;
         }
 
@@ -59,38 +69,45 @@ public class EnemyMovement : MonoBehaviour
 
     private void MovePlayerToSelectedCell(int xOffset, int zOffset)
     {
-
-
+        
+        Debug.Log("targetPosition :" + targetPosition);
+        Debug.Log("Enemy Initial Position" + enemyInitialPosition);
 
         if (directionShouldBeRight)
         {
-            if (xOffset > 0 ? transform.position.x < PlayerMovement.playerPosition.x : transform.position.x > PlayerMovement.playerPosition.x)
+            if (xOffset > 0 ? transform.position.x < targetPosition.x : transform.position.x > targetPosition.x)
             {
                 transform.Translate(Vector3.right * Time.deltaTime * speed * (xOffset > 0 ? 1 : -1));
             }
-            else if (zOffset > 0 ? transform.position.z < PlayerMovement.playerPosition.z : transform.position.z > PlayerMovement.playerPosition.z)
+            else if (zOffset > 0 ? transform.position.z < targetPosition.z : transform.position.z > targetPosition.z)
             {
                 transform.Translate(Vector3.forward * Time.deltaTime * speed * (zOffset > 0 ? 1 : -1));
             }
             else
             {
                 // Center the Player position in the Cell and Stopping the movement.
+                enemyMovementPoint = 0;
+                transform.position = targetPosition;
+                enemyInitialPosition = transform.position;
                 enemyIsMoving = false;
             }
         }
         else
         {
-            if (zOffset > 0 ? transform.position.z < PlayerMovement.playerPosition.z : transform.position.z > PlayerMovement.playerPosition.z)
+            if (zOffset > 0 ? transform.position.z < targetPosition.z : transform.position.z > targetPosition.z)
             {
                 transform.Translate(Vector3.forward * Time.deltaTime * speed * (zOffset > 0 ? 1 : -1));
             }
-            else if (xOffset > 0 ? transform.position.x < PlayerMovement.playerPosition.x : transform.position.x > PlayerMovement.playerPosition.x)
+            else if (xOffset > 0 ? transform.position.x < targetPosition.x : transform.position.x > targetPosition.x)
             {
                 transform.Translate(Vector3.right * Time.deltaTime * speed * (xOffset > 0 ? 1 : -1));
             }
             else
             {
                 // Center the Player position in the Cell and Stopping the movement.
+                enemyMovementPoint = 0;
+                transform.position = targetPosition;
+                enemyInitialPosition = transform.position;
                 enemyIsMoving = false;
             }
         }

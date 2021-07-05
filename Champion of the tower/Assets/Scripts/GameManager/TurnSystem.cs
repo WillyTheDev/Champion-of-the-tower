@@ -41,6 +41,7 @@ public class TurnSystem : MonoBehaviour
         isEnemyTurn = !isEnemyTurn;
         isPlayerTurn = !isPlayerTurn;
         timeLeft = turnLength;
+        EnemyMovement.enemyMovementPoint = 1;
         if (turnSystemIsOn)
         {
             StartCoroutine(TurnLoop());
