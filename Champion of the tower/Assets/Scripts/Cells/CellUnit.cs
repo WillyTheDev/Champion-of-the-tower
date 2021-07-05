@@ -21,17 +21,17 @@ public class CellUnit : MonoBehaviour
 
     private void OnMouseOver()
     {
-        if (canBeTargeted)
+        if (canBeTargeted && TurnSystem.isPlayerTurn)
         {
-            Vector3 distanceWithPlayer = transform.position - PlayerController.playerPosition;
-            if (Math.Abs(distanceWithPlayer.x) + Math.Abs(distanceWithPlayer.z) <= PlayerController.playerMovementDistance)
+            Vector3 distanceWithPlayer = transform.position - PlayerMovement.playerPosition;
+            if (Math.Abs(distanceWithPlayer.x) + Math.Abs(distanceWithPlayer.z) <= PlayerMovement.playerMovementDistance)
             {
                 cellMaterial.color = Color.green;
-                PlayerController.targetCell = gameObject;
-                if (PlayerController.IsThereAnObstacleOnPath())
+                PlayerMovement.targetCell = gameObject;
+                if (PlayerMovement.IsThereAnObstacleOnPath())
                 {
                     cellMaterial.color = Color.red;
-                    PlayerController.targetCell = null;
+                    PlayerMovement.targetCell = null;
                 }
             }
         }
