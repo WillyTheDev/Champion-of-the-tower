@@ -19,7 +19,7 @@ public class CellUnit : MonoBehaviour
 
     }
 
-    private void OnMouseEnter()
+    private void OnMouseOver()
     {
         if (canBeTargeted)
         {
@@ -47,7 +47,6 @@ public class CellUnit : MonoBehaviour
         if (other.gameObject.CompareTag("Obstacle"))
         {
             canBeTargeted = false;
-            cellMaterial.color = Color.red;
         }
     }
 
