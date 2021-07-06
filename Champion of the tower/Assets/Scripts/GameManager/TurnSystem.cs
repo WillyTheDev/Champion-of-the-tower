@@ -10,12 +10,14 @@ public class TurnSystem : MonoBehaviour
     public float timeLeft;
     private GameObject enemy;
     private EnemyData enemyData;
+    private EnemyMovement enemyMovement;
     private bool turnSystemIsOn = true;
     // Start is called before the first frame update
     void Start()
     {
         enemy = GameObject.FindGameObjectWithTag("Enemy");
         enemyData = enemy.GetComponent<EnemyData>();
+        enemyMovement = enemy.GetComponent<EnemyMovement>();
         timeLeft = turnLength;
         CheckingInitiative();
         StartCoroutine(TurnLoop());
@@ -41,7 +43,7 @@ public class TurnSystem : MonoBehaviour
         isEnemyTurn = !isEnemyTurn;
         isPlayerTurn = !isPlayerTurn;
         timeLeft = turnLength;
-        EnemyMovement.enemyMovementPoint = 1;
+        enemyMovement.enemyMovementPoint = 4;
         if (turnSystemIsOn)
         {
             StartCoroutine(TurnLoop());
