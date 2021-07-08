@@ -25,25 +25,102 @@ public class EnemyMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
 
         if (TurnSystem.isEnemyTurn && !enemyIsMoving && enemyMovementPoint > 0)
         {
-            DefineTargetCellForEnemyMovement();
+            enemyIsMoving = true;
+            StartCoroutine(MoveEnemyBasedOnPath(PathFindingEnemy()));
         }
 
-        if (enemyIsMoving)
+    }
+
+
+    List<Vector3> PathFindingEnemy()
+    {
+        enemyIsMoving = true;
+        
+        List<Vector3> xCellPaths = new List<Vector3>();
+        List<Vector3> zCellPaths = new List<Vector3>();
+        
+        for (int i = 0; i <= enemyMovementPoint; i++)
         {
-            MovePlayerToSelectedCell(xOffset, zOffset);
+            if(i == 0)
+            {
+                xCellPaths.Add(cellPath(transform.position.x, transform.position.z, "Right"));
+                zCellPaths.Add(cellPath(transform.position.x, transform.position.z, "Forward"));
+            } else
+            {
+                xCellPaths.Add(cellPath(xCellPaths[xCellPaths.Count  -1].
+                x, xCellPaths[xCellPaths.Count - 1].z, "Right"));
+                zCellPaths.Add(cellPath(zCellPaths[zCellPaths.Count - 1].x, zCellPaths[zCellPaths.Count - 1].z, "Forward"));
+            }
+            
+            Debug.Log("last xCell =" + xCellPaths[xCellPaths.Count - 1]);
+        }
+        return Vector3.Distance(xCellPaths[xCellPaths.Count -1], PlayerMovement.playerPosition) > Vector3.Distance(zCellPaths[zCellPaths.Count - 1], PlayerMovement.playerPosition)  ? zCellPaths : xCellPaths;
+
+        Vector3 cellPath(float xPosition, float zPosition, string axis)
+        {
+            int xOffsetWithPlayer = Convert.ToInt16( - transform.position.x);
+            int zOffsetWithPlayer = Convert.ToInt16(PlayerMovement.playerPosition.z - transform.position.z);
+
+            bool xIsPositive = xOffsetWithPlayer > 0;
+            bool zIsPositive = zOffsetWithPlayer > 0;
+
+            RaycastHit hitForward;
+            RaycastHit hitRight;
+
+            Vector3 originPosition = new Vector3(xPosition, 2, zPosition);
+            Debug.Log("X is Positive :" + xIsPositive);
+            Debug.Log("Z is Positive :" + zIsPositive);
+            if (axis == "Right")
+            {
+                if (Physics.Raycast(originPosition,xIsPositive ? Vector3.right : Vector3.left, out hitRight, 5))
+                {
+                    return new Vector3(originPosition.x, originPosition.y, originPosition.z + 5 * (zIsPositive ? 1 : -1));
+                }
+                else
+                {
+                    return new Vector3(originPosition.x + 5 * (xIsPositive ? 1 : -1), originPosition.y, originPosition.z);
+                }
+            } else
+            {
+                if (Physics.Raycast(originPosition,zIsPositive ? Vector3.forward : Vector3.back, out hitForward, 5))
+                {
+                    return new Vector3(originPosition.x + 5 * (xIsPositive ? 1 : -1), originPosition.y, originPosition.z);
+                }
+                else
+                {
+                    return new Vector3(originPosition.x, originPosition.y, originPosition.z + 5 * (zIsPositive ? 1 : -1));
+                }
+            }
+
         }
     }
 
 
+    IEnumerator MoveEnemyBasedOnPath(List<Vector3> path)
+    {
+        foreach (Vector3 cell in path)
+        {
+            for(float ft = 0f; ft <= 1; ft += Time.fixedDeltaTime)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, cell, ft);
+                yield return new WaitForFixedUpdate();
+            }
+            
+        }
+        enemyMovementPoint = 0;
+        enemyIsMoving = false;
+    }
+
+
+    
 
 
 
-
-    private void DefineTargetCellForEnemyMovement()
+private void DefineTargetCellForEnemyMovement()
     {
         RaycastHit hitForward;
         RaycastHit hitRight;
@@ -60,6 +137,7 @@ public class EnemyMovement : MonoBehaviour
             Debug.Log("Enemy is supposed to go forward");
             xPriority = false;
             Debug.DrawRay(transform.position, xOffset > 0 ? Vector3.right : Vector3.left * (5 * enemyMovementPoint), Color.red);
+
             
                 if (Physics.Raycast(transform.position, zOffset > 0 ? Vector3.forward : Vector3.back, out hitForward, 5 * enemyMovementPoint))
                 {
