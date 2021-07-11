@@ -81,7 +81,7 @@ public class PlayerMovement : MonoBehaviour
         Debug.Log("Checking for Player best path");
         List<Vector3> xCellPaths = new List<Vector3>();
         //Creating a path going x Axis & a path going on Z axis
-        for (int i = 0; i <= playerMovementPoint; i++)
+        for (int i = 0; i < playerMovementPoint; i++)
         {
             if (i == 0)
             {
@@ -117,6 +117,10 @@ public class PlayerMovement : MonoBehaviour
             {
                 if (Physics.Raycast(originPosition, xIsPositive ? Vector3.right : Vector3.left, out hitRight, 5))
                 {
+                    if (Physics.Raycast(originPosition, zIsPositive ? Vector3.forward : Vector3.back, out hitForward, 5))
+                    {
+                        return new Vector3(originPosition.x + 5 * (xIsPositive ? -1 : 1), originPosition.y, originPosition.z);
+                    }
                     return new Vector3(originPosition.x, originPosition.y, originPosition.z + 5 * (zIsPositive ? 1 : -1));
                 }
                 else
@@ -128,6 +132,10 @@ public class PlayerMovement : MonoBehaviour
             {
                 if (Physics.Raycast(originPosition, zIsPositive ? Vector3.forward : Vector3.back, out hitForward, 5))
                 {
+                    if (Physics.Raycast(originPosition, xIsPositive ? Vector3.right : Vector3.left, out hitRight, 5))
+                    {
+                        return new Vector3(originPosition.x + 5 * (xIsPositive ? -1 : 1), originPosition.y, originPosition.z);
+                    }
                     return new Vector3(originPosition.x + 5 * (xIsPositive ? 1 : -1), originPosition.y, originPosition.z);
                 }
                 else
