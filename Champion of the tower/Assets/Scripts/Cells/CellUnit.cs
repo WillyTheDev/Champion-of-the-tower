@@ -16,15 +16,18 @@ public class CellUnit : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
     private void OnMouseOver()
     {
-        if (canBeTargeted && TurnSystem.isPlayerTurn)
-        {
+        Debug.Log("PlayerPosition : " + PlayerMovement.playerPosition);
+        Debug.Log("Cell Position : " + transform.position);
+
+        if (canBeTargeted && TurnSystem.isPlayerTurn )
+        { 
             Vector3 distanceWithPlayer = transform.position - PlayerMovement.playerPosition;
-            if (Math.Abs(distanceWithPlayer.x) + Math.Abs(distanceWithPlayer.z) <= PlayerMovement.playerMovementDistance)
+            if (Math.Abs(distanceWithPlayer.x) + Math.Abs(distanceWithPlayer.z) <= PlayerMovement.playerMovementPoint * 5 && transform.position != PlayerMovement.playerPosition - new Vector3(0, 1.9f, 0))
             {
                 cellMaterial.color = Color.green;
                 PlayerMovement.targetCell = gameObject;
@@ -34,13 +37,14 @@ public class CellUnit : MonoBehaviour
                     PlayerMovement.targetCell = null;
                 }
             }
-        }
+        } 
     }
 
     private void OnMouseExit()
     {
         cellMaterial.color = new Color(1, 0.4622955f, 0.25f, 0.6f);
     }
+
 
     private void OnTriggerEnter(Collider other)
     {

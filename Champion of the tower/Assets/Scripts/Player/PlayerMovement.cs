@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -10,27 +11,15 @@ public class PlayerMovement : MonoBehaviour
     public static GameObject targetCell;
 
     public float speed = 20;
-    private static int m_playerMovementDistance = 15;
-    public static int playerMovementDistance
+    private static int m_playerMovementpoint = 3;
+    public static int playerMovementPoint
     {
-        get { return m_playerMovementDistance; }
-        set
-        {
-            if (value % 5 == 0)
-            {
-                m_playerMovementDistance = value;
-            }
-            else
-            {
-                m_playerMovementDistance = 15;
-                Debug.Log("Value can't be divised by 5!");
-            }
-        }
+        get { return m_playerMovementpoint; }
+        set { m_playerMovementpoint = value;}
     }
 
     public static Vector3 playerPosition;
     private static bool playerIsMoving;
-    private bool directionShouldBeRight;
     private int xOffset;
     private int zOffset;
 
@@ -44,44 +33,14 @@ public class PlayerMovement : MonoBehaviour
     {
 
         //When Mouse Button is pressed the last cell will be targeted as the next position
-        if (Input.GetMouseButtonDown(0) && targetCell != null && !playerIsMoving && TurnSystem.isPlayerTurn)
+        if (Input.GetMouseButtonDown(0) && targetCell != null && !playerIsMoving && TurnSystem.isPlayerTurn && playerMovementPoint > 0)
         {
             selectedCell = targetCell;
             Debug.Log(selectedCell.transform.position);
-            // Offsets are used to calculate how many cells there is between player position and selectedCells
-            // Offsets are used to determine if the movement will be negative or positive.
-            xOffset = Convert.ToInt16(selectedCell.transform.position.x - transform.position.x);
-            zOffset = Convert.ToInt16(selectedCell.transform.position.z - transform.position.z);
-            RaycastHit hitForward;
-            RaycastHit hitRight;
-            Debug.DrawRay(transform.position, Vector3.forward * (zOffset > 0 ? 10 : -10), Color.red);
-            Debug.DrawRay(transform.position, (xOffset > 0 ? Vector3.right : Vector3.left) * 10, Color.blue);
-            if (Physics.Raycast(transform.position, zOffset > 0 ? Vector3.forward : Vector3.back, out hitForward, 10))
-            {
-                if (hitForward.collider.CompareTag("Obstacle"))
-                {
-                    Debug.Log("Obstacle on the forward way !");
-                    directionShouldBeRight = true;
-                }
-            }
-            if (Physics.Raycast(transform.position, xOffset > 0 ? Vector3.right : Vector3.left, out hitRight, 10))
-            {
-                if (hitRight.collider.CompareTag("Obstacle"))
-                {
-                    Debug.Log("Obstacle on The Right way");
-                    directionShouldBeRight = false;
-                }
-            }
-
-
-
             playerIsMoving = true;
-
+            StartCoroutine(MovePlayerBasedOnPath(PathFindingPlayer(selectedCell.transform.position)));
         }
-        if (playerIsMoving)
-        {
-            MovePlayerToSelectedCell(xOffset, zOffset);
-        }
+        
     }
 
     public static bool IsThereAnObstacleOnPath()
@@ -99,52 +58,93 @@ public class PlayerMovement : MonoBehaviour
         return false;
     }
 
-
-
-    private void MovePlayerToSelectedCell(int xOffset, int zOffset)
+    IEnumerator MovePlayerBasedOnPath(List<Vector3> path)
     {
-
-
-
-        if (directionShouldBeRight)
+        
+        Debug.Log("Moving Player on the path...");
+        foreach (Vector3 cell in path)
         {
-            if (xOffset > 0 ? transform.position.x < selectedCell.transform.position.x : transform.position.x > selectedCell.transform.position.x)
+            for (float ft = 0f; ft <= 1; ft += Time.fixedDeltaTime)
             {
-                transform.Translate(Vector3.right * Time.deltaTime * speed * (xOffset > 0 ? 1 : -1));
+                transform.position = Vector3.MoveTowards(transform.position, cell, ft);
+                yield return new WaitForFixedUpdate();
             }
-            else if (zOffset > 0 ? transform.position.z < selectedCell.transform.position.z : transform.position.z > selectedCell.transform.position.z)
-            {
-                transform.Translate(Vector3.forward * Time.deltaTime * speed * (zOffset > 0 ? 1 : -1));
-            }
-            else
-            {
-                // Center the Player position in the Cell and Stopping the movement.
-                transform.position = selectedCell.transform.position + new Vector3(0, 2, 0);
-                playerPosition = transform.position;
-                playerIsMoving = false;
-            }
-        }
-        else
-        {
-            if (zOffset > 0 ? transform.position.z < selectedCell.transform.position.z : transform.position.z > selectedCell.transform.position.z)
-            {
-                transform.Translate(Vector3.forward * Time.deltaTime * speed * (zOffset > 0 ? 1 : -1));
-            }
-            else if (xOffset > 0 ? transform.position.x < selectedCell.transform.position.x : transform.position.x > selectedCell.transform.position.x)
-            {
-                transform.Translate(Vector3.right * Time.deltaTime * speed * (xOffset > 0 ? 1 : -1));
-            }
-            else
-            {
-                // Center the Player position in the Cell and Stopping the movement.
-                transform.position = selectedCell.transform.position + new Vector3(0, 2, 0);
-                playerPosition = transform.position;
-                playerIsMoving = false;
-            }
-        }
 
-
+        }
+        playerIsMoving = false;
+        playerPosition = transform.position;
+        Debug.Log("Player isn't moving anymore");
     }
+
+    List<Vector3> PathFindingPlayer(Vector3 selectedCell)
+    {
+        Debug.Log("Checking for Player best path");
+        List<Vector3> xCellPaths = new List<Vector3>();
+        //Creating a path going x Axis & a path going on Z axis
+        for (int i = 0; i <= playerMovementPoint; i++)
+        {
+            if (i == 0)
+            {
+                xCellPaths.Add(cellPath(transform.position.x, transform.position.z));
+            }
+            else
+            {
+                xCellPaths.Add(cellPath(xCellPaths[xCellPaths.Count - 1].
+                x, xCellPaths[xCellPaths.Count - 1].z));
+            }
+
+        }
+        Debug.Log("xPath :" + xCellPaths.Count);
+        List<Vector3> uniqueXCellPath = xCellPaths.Distinct().ToList<Vector3>();
+        playerMovementPoint -= uniqueXCellPath.Count;
+        return uniqueXCellPath;
+
+        //this nested Function are checking if the cell can be used by the enemy
+        Vector3 cellPath(float xPosition, float zPosition)
+        {
+            int xOffsetWithSelectedCell = Convert.ToInt16(selectedCell.x - xPosition);
+            int zOffsetWithSelectedCell = Convert.ToInt16(selectedCell.z - zPosition);
+
+            bool xIsPositive = xOffsetWithSelectedCell > 0;
+            bool zIsPositive = zOffsetWithSelectedCell > 0;
+
+
+            RaycastHit hitForward;
+            RaycastHit hitRight;
+            Vector3 originPosition = new Vector3(xPosition, 2, zPosition);
+
+            if (xPosition != selectedCell.x)
+            {
+                if (Physics.Raycast(originPosition, xIsPositive ? Vector3.right : Vector3.left, out hitRight, 5))
+                {
+                    return new Vector3(originPosition.x, originPosition.y, originPosition.z + 5 * (zIsPositive ? 1 : -1));
+                }
+                else
+                {
+                    return new Vector3(originPosition.x + 5 * (xIsPositive ? 1 : -1), originPosition.y, originPosition.z);
+                }
+            }
+            else if (zPosition != selectedCell.z)
+            {
+                if (Physics.Raycast(originPosition, zIsPositive ? Vector3.forward : Vector3.back, out hitForward, 5))
+                {
+                    return new Vector3(originPosition.x + 5 * (xIsPositive ? 1 : -1), originPosition.y, originPosition.z);
+                }
+                else
+                {
+                    return new Vector3(originPosition.x, originPosition.y, originPosition.z + 5 * (zIsPositive ? 1 : -1));
+                }
+            }
+            else
+            {
+                return originPosition;
+            }
+
+        }
+    }
+
+
+
 
 
 }
