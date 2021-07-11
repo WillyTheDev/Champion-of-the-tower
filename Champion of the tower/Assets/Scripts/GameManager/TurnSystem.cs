@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TurnSystem : MonoBehaviour
 {
@@ -9,11 +10,15 @@ public class TurnSystem : MonoBehaviour
     public float timeLeft;
     private GameObject[] enemies;
     private bool turnSystemIsOn = true;
+    private Slider timeSlider;
+    
     // Start is called before the first frame update
     void Start()
     {
         enemies = GameObject.FindGameObjectsWithTag("Enemy");
         timeLeft = turnLength;
+        timeSlider = GameObject.FindGameObjectWithTag("TimeSlider").GetComponent<Slider>();
+        timeSlider.maxValue = turnLength;
         StartCoroutine(TurnLoop());
     }
 
@@ -23,6 +28,7 @@ public class TurnSystem : MonoBehaviour
         if (turnSystemIsOn)
         {
             timeLeft -= 1 * Time.deltaTime;
+            timeSlider.value = timeLeft;
         }
     }
 
@@ -44,7 +50,7 @@ public class TurnSystem : MonoBehaviour
         PlayerMovement.playerMovementPoint = 3;
         yield return new WaitForSeconds(turnLength);
         isPlayerTurn = false;
-
+        timeLeft = turnLength;
         if (turnSystemIsOn)
         {
             StartCoroutine(TurnLoop());
