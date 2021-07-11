@@ -49,7 +49,7 @@ public class PlayerMovement : MonoBehaviour
         Debug.DrawRay(playerPosition, (targetCell.transform.position - playerPosition) * 15, Color.blue);
         if (Physics.Raycast(playerPosition, targetCell.transform.position - playerPosition, out hit, 15))
         {
-            if (hit.collider.CompareTag("Obstacle"))
+            if(hit.collider.CompareTag("Obstacle") || hit.collider.CompareTag("Enemy"))
             {
                 Debug.Log("There is an obstacle on the path");
                 return true;

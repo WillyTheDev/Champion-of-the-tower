@@ -5,21 +5,15 @@ using UnityEngine;
 public class TurnSystem : MonoBehaviour
 {
     static public bool isPlayerTurn;
-    static public bool isEnemyTurn;
     public int turnLength = 30;
     public float timeLeft;
-    private GameObject enemy;
-    private EnemyData enemyData;
-    private EnemyMovement enemyMovement;
+    private GameObject[] enemies;
     private bool turnSystemIsOn = true;
     // Start is called before the first frame update
     void Start()
     {
-        enemy = GameObject.FindGameObjectWithTag("Enemy");
-        enemyData = enemy.GetComponent<EnemyData>();
-        enemyMovement = enemy.GetComponent<EnemyMovement>();
+        enemies = GameObject.FindGameObjectsWithTag("Enemy");
         timeLeft = turnLength;
-        CheckingInitiative();
         StartCoroutine(TurnLoop());
     }
 
@@ -37,30 +31,23 @@ public class TurnSystem : MonoBehaviour
 
     IEnumerator TurnLoop()
     {
-        yield return new WaitForSeconds(turnLength);
-        Debug.Log("Time Left = " + timeLeft);
-        Debug.Log("Turn is Switching");
-        isEnemyTurn = !isEnemyTurn;
-        isPlayerTurn = !isPlayerTurn;
-        timeLeft = turnLength;
-        enemyMovement.enemyMovementPoint = 4;
+        foreach (GameObject enemy in enemies)
+        {
+            EnemyMovement enemyMovement = enemy.GetComponent<EnemyMovement>();
+            enemyMovement.enemyMovementPoint = 4;
+            enemyMovement.isEnemyTurn = true;
+            yield return new WaitForSeconds(turnLength);
+            timeLeft = turnLength;
+            enemyMovement.isEnemyTurn = false;
+        }
+        isPlayerTurn = true;
         PlayerMovement.playerMovementPoint = 3;
+        yield return new WaitForSeconds(turnLength);
+        isPlayerTurn = false;
+
         if (turnSystemIsOn)
         {
             StartCoroutine(TurnLoop());
-        }
-    }
-
-    private void CheckingInitiative()
-    {
-        if(enemyData.initiative > PlayerData.initiative)
-        {
-            isEnemyTurn = true;
-            isPlayerTurn = false;
-        } else
-        {
-            isPlayerTurn = true;
-            isEnemyTurn = false;
         }
     }
 

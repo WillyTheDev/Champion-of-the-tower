@@ -9,18 +9,13 @@ public class EnemyMovement : MonoBehaviour
     // Start is called before the first frame update
     public int speed = 20;
     public int enemyMovementPoint;
-    private int xOffset;
-    private int zOffset;
-    private bool xPriority;
-    private bool directionShouldBeRight;
-    private Vector3 targetPosition;
-    private Vector3 enemyInitialPosition;
+    public bool isEnemyTurn = false;
     private bool enemyIsMoving;
 
 
     void Start()
     {
-        enemyInitialPosition = transform.position;
+
     }
 
     // Update is called once per frame
@@ -28,7 +23,7 @@ public class EnemyMovement : MonoBehaviour
     {
 
 
-        if (TurnSystem.isEnemyTurn && !enemyIsMoving && enemyMovementPoint > 0)
+        if (isEnemyTurn && !enemyIsMoving && enemyMovementPoint > 0)
         {
             enemyIsMoving = true;
             StartCoroutine(MoveEnemyBasedOnPath(PathFindingEnemy()));
@@ -40,33 +35,32 @@ public class EnemyMovement : MonoBehaviour
     List<Vector3> PathFindingEnemy()
     {
         Debug.Log("Checking for Enemy best path");
-        List<Vector3> xCellPaths = new List<Vector3>();
-        List<Vector3> zCellPaths = new List<Vector3>();
+        List<Vector3> rightCellPaths = new List<Vector3>();
+        List<Vector3> forwardCellPaths = new List<Vector3>();
         //Creating a path going x Axis & a path going on Z axis
         for (int i = 0; i < enemyMovementPoint; i++)
         {
             if(i == 0)
             {
-                xCellPaths.Add(cellPath(transform.position.x, transform.position.z, "Right"));
-                zCellPaths.Add(cellPath(transform.position.x, transform.position.z, "Forward"));
+                rightCellPaths.Add(cellPath(transform.position.x, transform.position.z, "Right"));
+                forwardCellPaths.Add(cellPath(transform.position.x, transform.position.z, "Forward"));
             } else
             {
-                xCellPaths.Add(cellPath(xCellPaths[xCellPaths.Count  -1].
-                x, xCellPaths[xCellPaths.Count - 1].z, "Right"));
-                zCellPaths.Add(cellPath(zCellPaths[zCellPaths.Count - 1].x, zCellPaths[zCellPaths.Count - 1].z, "Forward"));
+                rightCellPaths.Add(cellPath(rightCellPaths[rightCellPaths.Count  -1].
+                x, rightCellPaths[rightCellPaths.Count - 1].z, "Right"));
+                forwardCellPaths.Add(cellPath(forwardCellPaths[forwardCellPaths.Count - 1].x, forwardCellPaths[forwardCellPaths.Count - 1].z, "Forward"));
             }
             
         }
-        Debug.Log("xPath :" + xCellPaths.Count);
-        Debug.Log("zPath :" + zCellPaths.Count);
-
         // Removing dupplicate value cerated on the loop to have the smallest path
-        List<Vector3> uniqueXCellPath = xCellPaths.Distinct().ToList<Vector3>();
-        List<Vector3> uniqueZCellPath = zCellPaths.Distinct().ToList<Vector3>();
+        List<Vector3> uniqueXCellPath = rightCellPaths.Distinct().ToList<Vector3>();
+        List<Vector3> uniqueZCellPath = forwardCellPaths.Distinct().ToList<Vector3>();
         Debug.Log("uniqueXPath :" + uniqueXCellPath.Count);
         Debug.Log("uniqueZPath :" + uniqueZCellPath.Count);
         // Returning the path based last cell of the path and his distance with playerPositon.
-        return Vector3.Distance(uniqueXCellPath[uniqueXCellPath.Count -1], PlayerMovement.playerPosition) > Vector3.Distance(uniqueZCellPath[uniqueZCellPath.Count - 1], PlayerMovement.playerPosition)  ? zCellPaths : xCellPaths;
+        bool forwardPathIsChoosen = Vector3.Distance(uniqueXCellPath[uniqueXCellPath.Count - 1], PlayerMovement.playerPosition) > Vector3.Distance(uniqueZCellPath[uniqueZCellPath.Count - 1], PlayerMovement.playerPosition);
+        Debug.Log("Z Path is Choosen : " + forwardPathIsChoosen);
+        return forwardPathIsChoosen ? forwardCellPaths : rightCellPaths;
 
 
         //this nested Function are checking if the cell can be used by the enemy
@@ -86,7 +80,6 @@ public class EnemyMovement : MonoBehaviour
             Vector3 primaryTargetCell;
             Vector3 secondaryTargetCell;
             Vector3 originPosition = new Vector3(xPosition, 2, zPosition);
-
             if (xOffsetWithPlayer != zOffsetWithPlayer)
             {
                 primaryTargetCell = PlayerMovement.playerPosition + new Vector3(xOffsetWithPlayer > zOffsetWithPlayer?(xIsPositive ? -5 : 5) : 0, 0,zOffsetWithPlayer > xOffsetWithPlayer ? (zIsPositive ? -5 : 5) : 0);
@@ -107,27 +100,37 @@ public class EnemyMovement : MonoBehaviour
                 return originPosition;
             }
 
-            if (axis == "Right" && xPosition != PlayerMovement.playerPosition.x)
+
+
+            if (axis == "Right" && xOffsetWithPlayer != 0)
             {
                 if (Physics.Raycast(originPosition,xIsPositive ? Vector3.right : Vector3.left, out hitRight, 5))
                 {
+                    if (Physics.Raycast(originPosition, zIsPositive ? Vector3.forward : Vector3.back, out hitForward, 5))
+                    {
+                        return new Vector3(originPosition.x + 5 * (xIsPositive ? -1 : 1), originPosition.y, originPosition.z);
+                    }
                     return new Vector3(originPosition.x, originPosition.y, originPosition.z + 5 * (zIsPositive ? 1 : -1));
                 }
                 else
                 {
                     return new Vector3(originPosition.x + 5 * (xIsPositive ? 1 : -1), originPosition.y, originPosition.z);
                 }
-            } else if (zPosition != PlayerMovement.playerPosition.z)
+            } else if (axis == "Forward" && zOffsetWithPlayer != 0)
             {
-                if (Physics.Raycast(originPosition,zIsPositive ? Vector3.forward : Vector3.back, out hitForward, 5))
+                if (Physics.Raycast(originPosition, zIsPositive ? Vector3.forward : Vector3.back, out hitForward, 5))
                 {
+                    if (Physics.Raycast(originPosition, xIsPositive ? Vector3.right : Vector3.left, out hitRight, 5))
+                    {
+                        return new Vector3(originPosition.x + 5 * (xIsPositive ? -1 : 1), originPosition.y, originPosition.z);
+                    }
                     return new Vector3(originPosition.x + 5 * (xIsPositive ? 1 : -1), originPosition.y, originPosition.z);
                 }
                 else
                 {
                     return new Vector3(originPosition.x, originPosition.y, originPosition.z + 5 * (zIsPositive ? 1 : -1));
                 }
-            } else
+            } else 
             {
                 return new Vector3(originPosition.x + 5 * (xIsPositive ? 1 : -1), originPosition.y, originPosition.z);
             }
