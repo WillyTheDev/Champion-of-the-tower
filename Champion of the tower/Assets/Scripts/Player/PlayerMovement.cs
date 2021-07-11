@@ -19,7 +19,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     public static Vector3 playerPosition;
-    private static bool playerIsMoving;
+    public static bool playerIsMoving;
     private int xOffset;
     private int zOffset;
 
@@ -31,7 +31,10 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (Input.GetMouseButtonDown(0))
+        {
+            Debug.Log("TargetCell = " + targetCell + ", playerIsMoving = " + playerIsMoving + ", Is Player Turn ? " + TurnSystem.isPlayerTurn + ", PlayerMovementPoint = " + playerMovementPoint);
+        }
         //When Mouse Button is pressed the last cell will be targeted as the next position
         if (Input.GetMouseButtonDown(0) && targetCell != null && !playerIsMoving && TurnSystem.isPlayerTurn && playerMovementPoint > 0)
         {
@@ -60,7 +63,7 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator MovePlayerBasedOnPath(List<Vector3> path)
     {
-        
+        CellData.cellPath = new List<Vector3>();
         Debug.Log("Moving Player on the path...");
         foreach (Vector3 cell in path)
         {
@@ -69,14 +72,14 @@ public class PlayerMovement : MonoBehaviour
                 transform.position = Vector3.MoveTowards(transform.position, cell, ft);
                 yield return new WaitForFixedUpdate();
             }
-
+            playerMovementPoint -= 1;
         }
         playerIsMoving = false;
         playerPosition = transform.position;
         Debug.Log("Player isn't moving anymore");
     }
 
-    List<Vector3> PathFindingPlayer(Vector3 selectedCell)
+    public static List<Vector3> PathFindingPlayer(Vector3 selectedCell)
     {
         Debug.Log("Checking for Player best path");
         List<Vector3> xCellPaths = new List<Vector3>();
@@ -85,7 +88,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (i == 0)
             {
-                xCellPaths.Add(cellPath(transform.position.x, transform.position.z));
+                xCellPaths.Add(cellPath(playerPosition.x, playerPosition.z));
             }
             else
             {
@@ -96,7 +99,7 @@ public class PlayerMovement : MonoBehaviour
         }
         Debug.Log("xPath :" + xCellPaths.Count);
         List<Vector3> uniqueXCellPath = xCellPaths.Distinct().ToList<Vector3>();
-        playerMovementPoint -= uniqueXCellPath.Count;
+        
         return uniqueXCellPath;
 
         //this nested Function are checking if the cell can be used by the enemy
