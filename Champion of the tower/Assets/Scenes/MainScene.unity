@@ -135,7 +135,6 @@ GameObject:
   - component: {fileID: 80814999}
   - component: {fileID: 80814998}
   - component: {fileID: 80814997}
-  - component: {fileID: 80815001}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -225,18 +224,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &80815001
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 80814996}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71d8b9883cecd4852b0092db60ced297, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &84070796
 GameObject:
   m_ObjectHideFlags: 0
@@ -634,8 +621,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 80815001}
-        m_TargetAssemblyTypeName: PlayerData, Assembly-CSharp
+      - m_Target: {fileID: 684228145}
+        m_TargetAssemblyTypeName: CombatSystem, Assembly-CSharp
         m_MethodName: enableAttackState
         m_Mode: 1
         m_Arguments:
@@ -965,6 +952,7 @@ GameObject:
   m_Component:
   - component: {fileID: 684228144}
   - component: {fileID: 684228143}
+  - component: {fileID: 684228145}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1000,6 +988,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &684228145
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 684228142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0b45cfdace8d4e6198b1594887724cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

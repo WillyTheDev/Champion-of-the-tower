@@ -60,7 +60,7 @@ public class EnemyMovement : MonoBehaviour
         // Returning the path based last cell of the path and his distance with playerPositon.
         bool forwardPathIsChoosen = Vector3.Distance(uniqueXCellPath[uniqueXCellPath.Count - 1], PlayerMovement.playerPosition) > Vector3.Distance(uniqueZCellPath[uniqueZCellPath.Count - 1], PlayerMovement.playerPosition);
         Debug.Log("Z Path is Choosen : " + forwardPathIsChoosen);
-        return forwardPathIsChoosen ? forwardCellPaths : rightCellPaths;
+        return forwardPathIsChoosen ? uniqueZCellPath : uniqueXCellPath;
 
 
         //this nested Function are checking if the cell can be used by the enemy
@@ -102,7 +102,7 @@ public class EnemyMovement : MonoBehaviour
 
 
 
-            if (axis == "Right" && xOffsetWithPlayer != 0)
+            if (axis == "Right")
             {
                 if (Physics.Raycast(originPosition,xIsPositive ? Vector3.right : Vector3.left, out hitRight, 5))
                 {
@@ -116,7 +116,7 @@ public class EnemyMovement : MonoBehaviour
                 {
                     return new Vector3(originPosition.x + 5 * (xIsPositive ? 1 : -1), originPosition.y, originPosition.z);
                 }
-            } else if (axis == "Forward" && zOffsetWithPlayer != 0)
+            } else if (axis == "Forward")
             {
                 if (Physics.Raycast(originPosition, zIsPositive ? Vector3.forward : Vector3.back, out hitForward, 5))
                 {
@@ -132,7 +132,7 @@ public class EnemyMovement : MonoBehaviour
                 }
             } else 
             {
-                return new Vector3(originPosition.x + 5 * (xIsPositive ? 1 : -1), originPosition.y, originPosition.z);
+                return originPosition;
             }
 
         }

@@ -2,21 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerData : MonoBehaviour
+public class Billboard : MonoBehaviour
 {
-    public static int initiative = 110;
-    
     // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
+    public Transform cam;
     // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
-    
+    private void LateUpdate()
+    {
+        transform.LookAt(transform.position + cam.forward);
+    }
 }
