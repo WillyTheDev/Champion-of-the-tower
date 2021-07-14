@@ -9,13 +9,12 @@ public class EnemyMovement : MonoBehaviour
     // Start is called before the first frame update
     public int speed = 20;
     public int enemyMovementPoint;
-    public bool isEnemyTurn = false;
     private bool enemyIsMoving;
-
+    private EnemyData enemyData;
 
     void Start()
     {
-
+        enemyData = GetComponent<EnemyData>();
     }
 
     // Update is called once per frame
@@ -23,7 +22,7 @@ public class EnemyMovement : MonoBehaviour
     {
 
 
-        if (isEnemyTurn && !enemyIsMoving && enemyMovementPoint > 0)
+        if (enemyData.isEnemyTurn && !enemyIsMoving && enemyMovementPoint > 0)
         {
             enemyIsMoving = true;
             StartCoroutine(MoveEnemyBasedOnPath(PathFindingEnemy()));

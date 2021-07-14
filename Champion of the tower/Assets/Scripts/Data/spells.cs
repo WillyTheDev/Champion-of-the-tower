@@ -6,6 +6,7 @@ public class Spells
     {
         maxDistance = 5,
         power = 10,
+        actionPointRequired = 2,
     };
 
 
@@ -14,6 +15,7 @@ public class Spells
     {
         public int maxDistance { get; set; }
         public int power { get; set; }
+        public int actionPointRequired { get; set; }
     }
 }
 

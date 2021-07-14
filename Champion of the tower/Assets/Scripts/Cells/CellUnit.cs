@@ -54,11 +54,6 @@ public class CellUnit : MonoBehaviour
             {
                 cellMaterial.color = Color.green;
                 PlayerMovement.targetCell = gameObject;
-                if (PlayerMovement.IsThereAnObstacleOnPath())
-                {
-                    cellMaterial.color = Color.red;
-                    PlayerMovement.targetCell = null;
-                }
             }
         } 
     }

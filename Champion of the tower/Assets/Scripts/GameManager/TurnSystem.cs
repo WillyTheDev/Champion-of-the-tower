@@ -40,11 +40,12 @@ public class TurnSystem : MonoBehaviour
         foreach (GameObject enemy in enemies)
         {
             EnemyMovement enemyMovement = enemy.GetComponent<EnemyMovement>();
+            EnemyData enemyData = enemy.GetComponent<EnemyData>();
             enemyMovement.enemyMovementPoint = 4;
-            enemyMovement.isEnemyTurn = true;
+            enemyData.isEnemyTurn = true;
             yield return new WaitForSeconds(turnLength);
             timeLeft = turnLength;
-            enemyMovement.isEnemyTurn = false;
+            enemyData.isEnemyTurn = false;
         }
         isPlayerTurn = true;
         PlayerMovement.playerMovementPoint = 3;

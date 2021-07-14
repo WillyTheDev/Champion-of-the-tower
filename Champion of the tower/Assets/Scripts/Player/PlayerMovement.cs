@@ -46,20 +46,7 @@ public class PlayerMovement : MonoBehaviour
         
     }
 
-    public static bool IsThereAnObstacleOnPath()
-    {
-        RaycastHit hit;
-        Debug.DrawRay(playerPosition, (targetCell.transform.position - playerPosition) * 15, Color.blue);
-        if (Physics.Raycast(playerPosition, targetCell.transform.position - playerPosition, out hit, 15))
-        {
-            if(hit.collider.CompareTag("Obstacle") || hit.collider.CompareTag("Enemy"))
-            {
-                Debug.Log("There is an obstacle on the path");
-                return true;
-            }
-        }
-        return false;
-    }
+    
 
     IEnumerator MovePlayerBasedOnPath(List<Vector3> path)
     {

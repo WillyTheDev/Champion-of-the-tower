@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     {
         if (CombatSystem.playerIsAttacking && CombatSystem.selectedEnemy != null && Input.GetMouseButtonDown(0))
         {
-            CombatSystem.Attack(Spells.testAttack, CombatSystem.selectedEnemy);
+            CombatSystem.PlayerAttack(Spells.testAttack, CombatSystem.selectedEnemy);
         }
     }
 }
