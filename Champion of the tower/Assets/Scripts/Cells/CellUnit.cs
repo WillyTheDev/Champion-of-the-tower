@@ -23,11 +23,19 @@ public class CellUnit : MonoBehaviour
             if (Math.Abs(distanceWithPlayer.x) + Math.Abs(distanceWithPlayer.z) <= PlayerController.selectedSpell.maxDistance && Math.Abs(distanceWithPlayer.x) + Math.Abs(distanceWithPlayer.z) >= PlayerController.selectedSpell.minDistance && transform.position != PlayerMovement.playerPosition - new Vector3(0, 1.9f, 0))
             {
                 cellMaterial.color = Color.blue;
-                if(transform.position == CombatSystem.selectedEnemy.transform.position - new Vector3(0, 1.9f, 0))
+            }
+
+            if (CombatSystem.selectedAttackCells.Count > 0)
+            {
+                foreach (Vector3 cell in CombatSystem.selectedAttackCells)
                 {
-                    cellMaterial.color = Color.red;
+                    if (cell == transform.position)
+                    {
+                        cellMaterial.color = Color.red;
+                    }
                 }
             }
+
         }
         else if (TurnSystem.isPlayerTurn && CellData.cellPath.Count > 0)
         {
@@ -56,8 +64,35 @@ public class CellUnit : MonoBehaviour
                 cellMaterial.color = Color.green;
                 PlayerMovement.targetCell = gameObject;
             }
-        } 
+        }
+        else if (PlayerController.selectedSpell != null)
+            {
+            Vector3 distanceWithPlayer = transform.position - PlayerMovement.playerPosition;
+            if (Math.Abs(distanceWithPlayer.x) + Math.Abs(distanceWithPlayer.z) <= PlayerController.selectedSpell.maxDistance && Math.Abs(distanceWithPlayer.x) + Math.Abs(distanceWithPlayer.z) >= PlayerController.selectedSpell.minDistance && transform.position != PlayerMovement.playerPosition - new Vector3(0, 1.9f, 0))
+            {
+                Vector3 cellPosition = transform.position;
+                switch (PlayerController.selectedSpell.pattern)
+                {
+                    case "xLine":
+                        CombatSystem.selectedAttackCells = new List<Vector3> { cellPosition, cellPosition + Vector3.right * 5, cellPosition + Vector3.left * 5 };
+                        break;
+                    case "zLine":
+                        CombatSystem.selectedAttackCells = new List<Vector3> { cellPosition, cellPosition + Vector3.forward * 5, cellPosition + Vector3.back * 5 };
+                        break;
+                    case "Cross":
+                        CombatSystem.selectedAttackCells = new List<Vector3> { cellPosition, cellPosition + Vector3.forward * 5, cellPosition + Vector3.back * 5, cellPosition + Vector3.right * 5, cellPosition + Vector3.left * 5 };
+                        break;
+                    default:
+                        CombatSystem.selectedAttackCells = new List<Vector3> { cellPosition };
+                        return;
+                }
+            }
+            
+            
+        }
+
     }
+
     private void OnMouseEnter()
     {
         if (canBeTargeted && TurnSystem.isPlayerTurn && !PlayerMovement.playerIsMoving && !PlayerController.playerIsAttacking)
@@ -69,6 +104,7 @@ public class CellUnit : MonoBehaviour
                 PlayerMovement.targetCell = gameObject;
             }
         }
+        
         
     }
 

@@ -57,9 +57,9 @@ public class EnemyData : MonoBehaviour
 
     private void OnMouseOver()
     {
-        CombatSystem.selectedEnemy = gameObject;
-        enemyIsSelected = true;
-        Debug.Log("Enemy Selected = " + gameObject.name);
+            CombatSystem.selectedEnemy = gameObject;
+            enemyIsSelected = true;
+            Debug.Log("Enemy Selected = " + gameObject.name);
     }
 
     private void OnMouseExit()

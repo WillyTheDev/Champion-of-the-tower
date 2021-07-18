@@ -37,6 +37,12 @@ public class TurnSystem : MonoBehaviour
 
     IEnumerator TurnLoop()
     {
+        
+        if(enemies.Length <= 0)
+        {
+            turnSystemIsOn = false;
+        }
+        enemies = GameObject.FindGameObjectsWithTag("Enemy");
         foreach (GameObject enemy in enemies)
         {
             EnemyData enemyData = enemy.GetComponent<EnemyData>();

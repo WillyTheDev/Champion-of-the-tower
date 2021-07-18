@@ -14,8 +14,6 @@ public class PlayerMovement : MonoBehaviour
 
     public static Vector3 playerPosition;
     public static bool playerIsMoving;
-    private int xOffset;
-    private int zOffset;
 
     void Start()
     {
