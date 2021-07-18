@@ -8,8 +8,7 @@ public class EnemyMovement : MonoBehaviour
 {
     // Start is called before the first frame update
     public int speed = 20;
-    public int enemyMovementPoint;
-    private bool enemyIsMoving;
+    public bool enemyIsMoving;
     private EnemyData enemyData;
 
     void Start()
@@ -22,7 +21,7 @@ public class EnemyMovement : MonoBehaviour
     {
 
 
-        if (enemyData.isEnemyTurn && !enemyIsMoving && enemyMovementPoint > 0)
+        if (enemyData.isEnemyTurn && !enemyIsMoving && enemyData.enemyMovementPoint > 0)
         {
             enemyIsMoving = true;
             StartCoroutine(MoveEnemyBasedOnPath(PathFindingEnemy()));
@@ -37,7 +36,7 @@ public class EnemyMovement : MonoBehaviour
         List<Vector3> rightCellPaths = new List<Vector3>();
         List<Vector3> forwardCellPaths = new List<Vector3>();
         //Creating a path going x Axis & a path going on Z axis
-        for (int i = 0; i < enemyMovementPoint; i++)
+        for (int i = 0; i < enemyData.enemyMovementPoint; i++)
         {
             if(i == 0)
             {
@@ -150,7 +149,7 @@ public class EnemyMovement : MonoBehaviour
             }
             
         }
-        enemyMovementPoint = 0;
+        enemyData.enemyMovementPoint = 0;
         enemyIsMoving = false;
         Debug.Log("Enemy isn't moving anymore");
     }

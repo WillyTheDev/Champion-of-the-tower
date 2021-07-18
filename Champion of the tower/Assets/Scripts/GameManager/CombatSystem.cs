@@ -5,7 +5,7 @@ using UnityEngine;
 static public class CombatSystem
 {
 
-    public static bool playerIsAttacking = false;
+    
     public static Spells.Spell selectedSpell;
     public static GameObject selectedEnemy = new GameObject();
     public static GameObject selectedPlayer = GameObject.FindGameObjectWithTag("Player");
@@ -25,10 +25,6 @@ static public class CombatSystem
         enemyData.enemyActionPoint -= spell.actionPointRequired;
     }
 
-    public static void enableAttackState()
-    {
-        playerIsAttacking = !playerIsAttacking;
-        selectedSpell = Spells.testAttack;
-    }
+    
 
 }

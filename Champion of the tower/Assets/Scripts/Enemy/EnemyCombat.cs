@@ -18,13 +18,15 @@ public class EnemyCombat : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (enemyData.isEnemyTurn && enemyMovement.enemyMovementPoint == 0 && !canAttack && enemyData.enemyActionPoint > 0)
+        if (enemyData.isEnemyTurn && enemyData.enemyActionPoint > 0 && enemyMovement.enemyIsMoving == false)
         {
+            print("Check Contact");
             checkEnemyContact();
         }
 
         if (canAttack)
         {
+            print("Player Contact, enemy is attacking !");
             CombatSystem.EnnemyAttack(Spells.testAttack, CombatSystem.selectedPlayer, enemyData);
             canAttack = false;
         }
@@ -41,7 +43,7 @@ public class EnemyCombat : MonoBehaviour
                 canAttack = true;
             }
         }
-        if (Physics.Raycast(transform.position, Vector3.down, out hit, 5))
+        if (Physics.Raycast(transform.position, Vector3.back, out hit, 5))
         {
             if (hit.collider.CompareTag("Player"))
             {

@@ -11,12 +11,6 @@ public class PlayerMovement : MonoBehaviour
     public static GameObject targetCell;
 
     public float speed = 20;
-    private static int m_playerMovementpoint = 3;
-    public static int playerMovementPoint
-    {
-        get { return m_playerMovementpoint; }
-        set { m_playerMovementpoint = value;}
-    }
 
     public static Vector3 playerPosition;
     public static bool playerIsMoving;
@@ -31,12 +25,9 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Debug.Log("TargetCell = " + targetCell + ", playerIsMoving = " + playerIsMoving + ", Is Player Turn ? " + TurnSystem.isPlayerTurn + ", PlayerMovementPoint = " + playerMovementPoint);
-        }
+        
         //When Mouse Button is pressed the last cell will be targeted as the next position
-        if (Input.GetMouseButtonDown(0) && targetCell != null && !playerIsMoving && TurnSystem.isPlayerTurn && playerMovementPoint > 0)
+        if (Input.GetMouseButtonDown(0) && targetCell != null && !playerIsMoving && TurnSystem.isPlayerTurn && PlayerData.playerMovementPoint > 0)
         {
             selectedCell = targetCell;
             Debug.Log(selectedCell.transform.position);
@@ -51,6 +42,7 @@ public class PlayerMovement : MonoBehaviour
     IEnumerator MovePlayerBasedOnPath(List<Vector3> path)
     {
         CellData.cellPath = new List<Vector3>();
+        playerPosition = path[path.Count - 1];
         Debug.Log("Moving Player on the path...");
         foreach (Vector3 cell in path)
         {
@@ -59,10 +51,10 @@ public class PlayerMovement : MonoBehaviour
                 transform.position = Vector3.MoveTowards(transform.position, cell, ft);
                 yield return new WaitForFixedUpdate();
             }
-            playerMovementPoint -= 1;
+            PlayerData.playerMovementPoint -= 1;
         }
-        playerIsMoving = false;
         playerPosition = transform.position;
+        playerIsMoving = false;
         Debug.Log("Player isn't moving anymore");
     }
 
@@ -71,7 +63,7 @@ public class PlayerMovement : MonoBehaviour
         Debug.Log("Checking for Player best path");
         List<Vector3> xCellPaths = new List<Vector3>();
         //Creating a path going x Axis & a path going on Z axis
-        for (int i = 0; i < playerMovementPoint; i++)
+        for (int i = 0; i < PlayerData.playerMovementPoint; i++)
         {
             if (i == 0)
             {

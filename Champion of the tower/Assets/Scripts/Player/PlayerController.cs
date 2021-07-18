@@ -1,10 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 
 public class PlayerController : MonoBehaviour
 {
+    public static bool playerIsAttacking = false;
+    public static Spells.Spell selectedSpell;
+
     private void Start()
     {
         
@@ -12,9 +16,15 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (CombatSystem.playerIsAttacking && CombatSystem.selectedEnemy != null && Input.GetMouseButtonDown(0))
+        if (playerIsAttacking && CombatSystem.selectedEnemy != null && Input.GetMouseButtonDown(0) && PlayerData.playerActionPoint > 0)
         {
             CombatSystem.PlayerAttack(Spells.testAttack, CombatSystem.selectedEnemy);
         }
+    }
+
+    public static void enableAttackState()
+    {
+        playerIsAttacking = !playerIsAttacking;
+        selectedSpell = Spells.testAttack;
     }
 }

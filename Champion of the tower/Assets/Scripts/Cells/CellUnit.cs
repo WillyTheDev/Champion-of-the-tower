@@ -16,10 +16,10 @@ public class CellUnit : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (CombatSystem.playerIsAttacking && TurnSystem.isPlayerTurn)
+        if (PlayerController.playerIsAttacking && TurnSystem.isPlayerTurn)
         {
             Vector3 distanceWithPlayer = transform.position - PlayerMovement.playerPosition;
-            if (Math.Abs(distanceWithPlayer.x) + Math.Abs(distanceWithPlayer.z) <= CombatSystem.selectedSpell.maxDistance && transform.position != PlayerMovement.playerPosition - new Vector3(0, 1.9f, 0))
+            if (Math.Abs(distanceWithPlayer.x) + Math.Abs(distanceWithPlayer.z) <= PlayerController.selectedSpell.maxDistance && transform.position != PlayerMovement.playerPosition - new Vector3(0, 1.9f, 0))
             {
                 cellMaterial.color = Color.blue;
                 if(transform.position == CombatSystem.selectedEnemy.transform.position - new Vector3(0, 1.9f, 0))
@@ -47,10 +47,10 @@ public class CellUnit : MonoBehaviour
 
     private void OnMouseOver()
     {
-        if (canBeTargeted && TurnSystem.isPlayerTurn && !PlayerMovement.playerIsMoving && !CombatSystem.playerIsAttacking)
+        if (canBeTargeted && TurnSystem.isPlayerTurn && !PlayerMovement.playerIsMoving && !PlayerController.playerIsAttacking)
         {
             Vector3 distanceWithPlayer = transform.position - PlayerMovement.playerPosition;
-            if (Math.Abs(distanceWithPlayer.x) + Math.Abs(distanceWithPlayer.z) <= PlayerMovement.playerMovementPoint * 5 && transform.position != PlayerMovement.playerPosition - new Vector3(0, 1.9f, 0))
+            if (Math.Abs(distanceWithPlayer.x) + Math.Abs(distanceWithPlayer.z) <= PlayerData.playerMovementPoint * 5 && transform.position != PlayerMovement.playerPosition - new Vector3(0, 1.9f, 0))
             {
                 cellMaterial.color = Color.green;
                 PlayerMovement.targetCell = gameObject;
@@ -59,10 +59,10 @@ public class CellUnit : MonoBehaviour
     }
     private void OnMouseEnter()
     {
-        if (canBeTargeted && TurnSystem.isPlayerTurn && !PlayerMovement.playerIsMoving && !CombatSystem.playerIsAttacking)
+        if (canBeTargeted && TurnSystem.isPlayerTurn && !PlayerMovement.playerIsMoving && !PlayerController.playerIsAttacking)
         {
             Vector3 distanceWithPlayer = transform.position - PlayerMovement.playerPosition;
-            if (Math.Abs(distanceWithPlayer.x) + Math.Abs(distanceWithPlayer.z) <= PlayerMovement.playerMovementPoint * 5 && transform.position != PlayerMovement.playerPosition - new Vector3(0, 1.9f, 0))
+            if (Math.Abs(distanceWithPlayer.x) + Math.Abs(distanceWithPlayer.z) <= PlayerData.playerMovementPoint * 5 && transform.position != PlayerMovement.playerPosition - new Vector3(0, 1.9f, 0))
             {
                 CellData.cellPath = PlayerMovement.PathFindingPlayer(transform.position);
                 PlayerMovement.targetCell = gameObject;
