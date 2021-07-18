@@ -19,7 +19,8 @@ public class CellUnit : MonoBehaviour
         if (PlayerController.playerIsAttacking && TurnSystem.isPlayerTurn)
         {
             Vector3 distanceWithPlayer = transform.position - PlayerMovement.playerPosition;
-            if (Math.Abs(distanceWithPlayer.x) + Math.Abs(distanceWithPlayer.z) <= PlayerController.selectedSpell.maxDistance && transform.position != PlayerMovement.playerPosition - new Vector3(0, 1.9f, 0))
+            //Checking if the cell is on pattern of the selectedSpell
+            if (Math.Abs(distanceWithPlayer.x) + Math.Abs(distanceWithPlayer.z) <= PlayerController.selectedSpell.maxDistance && Math.Abs(distanceWithPlayer.x) + Math.Abs(distanceWithPlayer.z) >= PlayerController.selectedSpell.minDistance && transform.position != PlayerMovement.playerPosition - new Vector3(0, 1.9f, 0))
             {
                 cellMaterial.color = Color.blue;
                 if(transform.position == CombatSystem.selectedEnemy.transform.position - new Vector3(0, 1.9f, 0))

@@ -22,9 +22,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public static void enableAttackState()
+    public static void enableTestAttackState()
     {
         playerIsAttacking = !playerIsAttacking;
         selectedSpell = Spells.testAttack;
+    }
+
+    public static void enableTestDistanceAttackState()
+    {
+        playerIsAttacking = !playerIsAttacking;
+        selectedSpell = Spells.testDistanceAttack;
     }
 }

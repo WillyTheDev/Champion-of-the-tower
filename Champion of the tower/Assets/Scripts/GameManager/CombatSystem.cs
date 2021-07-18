@@ -6,7 +6,7 @@ static public class CombatSystem
 {
 
     
-    public static Spells.Spell selectedSpell;
+    
     public static GameObject selectedEnemy = new GameObject();
     public static GameObject selectedPlayer = GameObject.FindGameObjectWithTag("Player");
     // Start is called before the first frame update

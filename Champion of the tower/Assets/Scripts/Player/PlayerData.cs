@@ -46,6 +46,11 @@ public class PlayerData : MonoBehaviour
         playerTextHealth.text = "Health : " + health.ToString();
         playerTextActionPoint.text = "PA : " + playerActionPoint.ToString();
         playerTextMovementPoint.text = "PM : " + playerMovementPoint.ToString();
+
+        if (health == 0)
+        {
+            Destroy(gameObject);
+        }
     }
 
     

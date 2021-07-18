@@ -48,6 +48,11 @@ public class EnemyData : MonoBehaviour
             enemyTextActionPoint.text = "PA : " + enemyActionPoint.ToString();
             enemyTextMovementPoint.text = "PM : " + enemyMovementPoint.ToString();
         }
+
+        if(health == 0)
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void OnMouseOver()
