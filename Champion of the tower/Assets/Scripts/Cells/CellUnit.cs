@@ -19,10 +19,13 @@ public class CellUnit : MonoBehaviour
         if (PlayerController.playerIsAttacking && TurnSystem.isPlayerTurn)
         {
             Vector3 distanceWithPlayer = transform.position - PlayerMovement.playerPosition;
-            //Checking if the cell is on pattern of the selectedSpell
+
             if (Math.Abs(distanceWithPlayer.x) + Math.Abs(distanceWithPlayer.z) <= PlayerController.selectedSpell.maxDistance && Math.Abs(distanceWithPlayer.x) + Math.Abs(distanceWithPlayer.z) >= PlayerController.selectedSpell.minDistance && transform.position != PlayerMovement.playerPosition - new Vector3(0, 1.9f, 0))
             {
                 cellMaterial.color = Color.blue;
+            } else
+            {
+                cellMaterial.color = new Color(0.7379405f, 0.9589565f, 0.9716981f, 0.2f);
             }
 
             if (CombatSystem.selectedAttackCells.Count > 0)
@@ -35,8 +38,13 @@ public class CellUnit : MonoBehaviour
                     }
                 }
             }
+            
+
+
 
         }
+
+
         else if (TurnSystem.isPlayerTurn && CellData.cellPath.Count > 0)
         {
             if (CellData.cellPath.Contains(new Vector3(transform.position.x, 2, transform.position.z)))
@@ -51,7 +59,9 @@ public class CellUnit : MonoBehaviour
         {
             cellMaterial.color = new Color(0.7379405f, 0.9589565f, 0.9716981f, 0.2f);
         }
+
         
+
     }
 
     private void OnMouseOver()
