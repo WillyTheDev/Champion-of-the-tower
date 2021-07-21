@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Linq;
+using Random = UnityEngine.Random;
 
 public class EnemyMovement : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class EnemyMovement : MonoBehaviour
     void Start()
     {
         enemyData = GetComponent<EnemyData>();
+        SettingEnemyInitialPosition();
     }
 
     // Update is called once per frame
@@ -29,6 +31,19 @@ public class EnemyMovement : MonoBehaviour
 
     }
 
+    private void SettingEnemyInitialPosition()
+    {
+        transform.position = new Vector3(Random.Range(-5, 5) * 5, 2, Random.Range(1, 5) * 5);
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.right, out hit, 2))
+        {
+            SettingEnemyInitialPosition();
+        }
+        else
+        {
+            return;
+        }
+    }
 
     List<Vector3> PathFindingEnemy()
     {

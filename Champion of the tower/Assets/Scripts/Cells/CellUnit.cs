@@ -16,6 +16,8 @@ public class CellUnit : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
+
         if (PlayerController.playerIsAttacking && TurnSystem.isPlayerTurn)
         {
             Vector3 distanceWithPlayer = transform.position - PlayerMovement.playerPosition;

@@ -8,6 +8,10 @@ TagManager:
   - Obstacle
   - Enemy
   - TimeSlider
+  - EnemyTextName
+  - EnemyTextHealth
+  - EnemyActionPoint
+  - EnemyMovementPoint
   layers:
   - Default
   - TransparentFX

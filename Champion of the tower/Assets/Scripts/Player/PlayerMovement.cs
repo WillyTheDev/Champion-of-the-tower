@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Linq;
+using Random = UnityEngine.Random;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
+        transform.position = new Vector3(Random.Range(-5, 5) * 5, 2, Random.Range(0, -5) * 5);
         playerPosition = transform.position;
     }
 
@@ -35,7 +37,18 @@ public class PlayerMovement : MonoBehaviour
         
     }
 
-    
+    private void SettingPlayerInitialPosition()
+    {
+        transform.position = new Vector3(Random.Range(-5, 5) * 5, 2, Random.Range(-1, -5) * 5);
+        RaycastHit hit;
+        if(Physics.Raycast(transform.position, Vector3.right, out hit, 2))
+        {
+            SettingPlayerInitialPosition();
+        } else
+        {
+            return;
+        }
+    }
 
     IEnumerator MovePlayerBasedOnPath(List<Vector3> path)
     {
@@ -44,10 +57,10 @@ public class PlayerMovement : MonoBehaviour
         Debug.Log("Moving Player on the path...");
         foreach (Vector3 cell in path)
         {
-            for (float ft = 0f; ft <= 1; ft += Time.fixedDeltaTime)
+            for (float ft = 0f; ft <= 1; ft += Time.deltaTime)
             {
                 transform.position = Vector3.MoveTowards(transform.position, cell, ft);
-                yield return new WaitForFixedUpdate();
+                yield return new WaitForEndOfFrame();
             }
             PlayerData.playerMovementPoint -= 1;
         }

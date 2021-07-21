@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +10,7 @@ public class TurnSystem : MonoBehaviour
     private GameObject[] enemies;
     private bool turnSystemIsOn = true;
     private Slider timeSlider;
-    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -33,12 +32,12 @@ public class TurnSystem : MonoBehaviour
     }
 
 
-    
+
 
     IEnumerator TurnLoop()
     {
-        
-        if(enemies.Length <= 0)
+
+        if (enemies.Length <= 0)
         {
             turnSystemIsOn = false;
         }

@@ -35,7 +35,10 @@ public class EnemyData : MonoBehaviour
    
     void Start()
     {
-
+        enemyTextName = GameObject.FindGameObjectWithTag("EnemyTextName").GetComponent<TextMeshProUGUI>();
+        enemyTextHealth = GameObject.FindGameObjectWithTag("EnemyTextHealth").GetComponent<TextMeshProUGUI>();
+        enemyTextActionPoint = GameObject.FindGameObjectWithTag("EnemyActionPoint").GetComponent<TextMeshProUGUI>();
+        enemyTextMovementPoint = GameObject.FindGameObjectWithTag("EnemyMovementPoint").GetComponent<TextMeshProUGUI>();
     }
 
     // Update is called once per frame

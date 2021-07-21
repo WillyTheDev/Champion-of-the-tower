@@ -7,6 +7,7 @@ public class CameraController : MonoBehaviour
     // Start is called before the first frame update
     public GameObject objectToFollow;
     public float sensitivity = 20;
+    public float speedMovement = 20;
     public float rotateHorizontal;
     private bool playerIsRotating = false;
     public Vector3 offsetWithTargetObject;
