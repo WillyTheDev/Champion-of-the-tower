@@ -12,6 +12,7 @@ TagManager:
   - EnemyTextHealth
   - EnemyActionPoint
   - EnemyMovementPoint
+  - Reward Canvas
   layers:
   - Default
   - TransparentFX

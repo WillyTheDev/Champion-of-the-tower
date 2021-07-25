@@ -49,6 +49,7 @@ public class CellUnit : MonoBehaviour
 
         else if (TurnSystem.isPlayerTurn && CellData.cellPath.Count > 0)
         {
+            Debug.Log("CellPath Count = " + CellData.cellPath.Count);
             if (CellData.cellPath.Contains(new Vector3(transform.position.x, 2, transform.position.z)))
             {
                 Debug.Log("Cell is on Path");

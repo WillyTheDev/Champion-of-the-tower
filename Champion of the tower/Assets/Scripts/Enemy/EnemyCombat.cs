@@ -7,7 +7,7 @@ public class EnemyCombat : MonoBehaviour
 
     private EnemyData enemyData;
     private EnemyMovement enemyMovement;
-    private bool canAttack;
+    public bool canAttack;
     // Start is called before the first frame update
     void Start()
     {

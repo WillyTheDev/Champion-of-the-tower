@@ -21,6 +21,10 @@ public class PlayerController : MonoBehaviour
             CombatSystem.PlayerAttack(selectedSpell, CombatSystem.selectedAttackCells);
             playerIsAttacking = !playerIsAttacking;
         }
+
+        if(playerIsAttacking && Input.GetMouseButtonDown(1)){
+            playerIsAttacking = !playerIsAttacking;
+        }
     }
 
     public static void enableTestAttackState()

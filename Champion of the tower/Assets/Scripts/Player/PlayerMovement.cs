@@ -11,15 +11,14 @@ public class PlayerMovement : MonoBehaviour
     private GameObject selectedCell;
     public static GameObject targetCell;
 
-    public float speed = 20;
+    public float speed = 5;
 
     public static Vector3 playerPosition;
     public static bool playerIsMoving;
 
     void Start()
     {
-        transform.position = new Vector3(Random.Range(-5, 5) * 5, 2, Random.Range(0, -5) * 5);
-        playerPosition = transform.position;
+        StartCoroutine(SettingPlayerInitialPosition());
     }
 
     // Update is called once per frame
@@ -27,6 +26,12 @@ public class PlayerMovement : MonoBehaviour
     {
         
         //When Mouse Button is pressed the last cell will be targeted as the next position
+        
+        
+    }
+
+    private void FixedUpdate()
+    {
         if (Input.GetMouseButtonDown(0) && targetCell != null && !playerIsMoving && TurnSystem.isPlayerTurn && PlayerData.playerMovementPoint > 0)
         {
             selectedCell = targetCell;
@@ -34,38 +39,37 @@ public class PlayerMovement : MonoBehaviour
             playerIsMoving = true;
             StartCoroutine(MovePlayerBasedOnPath(PathFindingPlayer(selectedCell.transform.position)));
         }
-        
     }
 
-    private void SettingPlayerInitialPosition()
+    IEnumerator SettingPlayerInitialPosition()
     {
+        yield return new WaitForEndOfFrame();
         transform.position = new Vector3(Random.Range(-5, 5) * 5, 2, Random.Range(-1, -5) * 5);
         RaycastHit hit;
-        if(Physics.Raycast(transform.position, Vector3.right, out hit, 2))
+        if(Physics.Raycast(transform.position, Vector3.right, out hit, 5))
         {
-            SettingPlayerInitialPosition();
+            StartCoroutine(SettingPlayerInitialPosition());
         } else
         {
-            return;
+            playerPosition = transform.position;
         }
     }
 
     IEnumerator MovePlayerBasedOnPath(List<Vector3> path)
     {
-        CellData.cellPath = new List<Vector3>();
         playerPosition = path[path.Count - 1];
         Debug.Log("Moving Player on the path...");
         foreach (Vector3 cell in path)
         {
-            for (float ft = 0f; ft <= 1; ft += Time.deltaTime)
+            while(transform.position != cell)
             {
-                transform.position = Vector3.MoveTowards(transform.position, cell, ft);
-                yield return new WaitForEndOfFrame();
+                transform.position = Vector3.MoveTowards(transform.position, cell, Time.deltaTime * speed);
+                yield return new WaitForFixedUpdate();
             }
             PlayerData.playerMovementPoint -= 1;
         }
-        playerPosition = transform.position;
         playerIsMoving = false;
+        transform.position = path[path.Count - 1];
         Debug.Log("Player isn't moving anymore");
     }
 

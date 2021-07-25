@@ -8,18 +8,18 @@ using Random = UnityEngine.Random;
 public class EnemyMovement : MonoBehaviour
 {
     // Start is called before the first frame update
-    public int speed = 20;
+    public int speed = 10;
     public bool enemyIsMoving;
     private EnemyData enemyData;
 
     void Start()
     {
         enemyData = GetComponent<EnemyData>();
-        SettingEnemyInitialPosition();
+        StartCoroutine(SettingEnemyInitialPosition());
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
 
 
@@ -31,18 +31,16 @@ public class EnemyMovement : MonoBehaviour
 
     }
 
-    private void SettingEnemyInitialPosition()
+    IEnumerator SettingEnemyInitialPosition()
     {
+        yield return new WaitForEndOfFrame();
         transform.position = new Vector3(Random.Range(-5, 5) * 5, 2, Random.Range(1, 5) * 5);
         RaycastHit hit;
         if (Physics.Raycast(transform.position, Vector3.right, out hit, 2))
         {
             SettingEnemyInitialPosition();
         }
-        else
-        {
-            return;
-        }
+        
     }
 
     List<Vector3> PathFindingEnemy()
@@ -157,13 +155,14 @@ public class EnemyMovement : MonoBehaviour
         Debug.Log("Moving enemies on the path...");
         foreach (Vector3 cell in path)
         {
-            for(float ft = 0f; ft <= 1; ft += Time.fixedDeltaTime)
+            while(transform.position != cell)
             {
-                transform.position = Vector3.MoveTowards(transform.position, cell, ft);
+                transform.position = Vector3.MoveTowards(transform.position, cell, Time.deltaTime * speed);
                 yield return new WaitForFixedUpdate();
             }
             
         }
+        transform.position = path[path.Count - 1];
         enemyData.enemyMovementPoint = 0;
         enemyIsMoving = false;
         Debug.Log("Enemy isn't moving anymore");

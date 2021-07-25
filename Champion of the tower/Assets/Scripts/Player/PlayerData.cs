@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using TMPro;
 
@@ -49,7 +50,8 @@ public class PlayerData : MonoBehaviour
 
         if (health == 0)
         {
-            Destroy(gameObject);
+            health = 60;
+            SceneManager.LoadScene("HUB");
         }
     }
 
