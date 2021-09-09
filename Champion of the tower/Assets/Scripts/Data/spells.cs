@@ -8,7 +8,8 @@ public class Spells
         minDistance = 0,
         power = 20,
         actionPointRequired = 2,
-        pattern = "Single"
+        pattern = "Single",
+        spellPrefabsName = "SlashSmallGold"
     };
 
     static public Spell testDistanceAttack = new Spell()
@@ -37,6 +38,7 @@ public class Spells
         public int power { get; set; }
         public int actionPointRequired { get; set; }
         public string pattern { get; set; }
-    }
+        public string spellPrefabsName {get ; set;}
+    };
 }
 

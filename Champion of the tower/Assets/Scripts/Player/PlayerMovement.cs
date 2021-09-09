@@ -41,6 +41,15 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    public void RotatePlayerBasedOnTargetCell(Vector3 targetCell){
+        
+        transform.LookAt(targetCell);
+        Vector3 eulerAngles = transform.rotation.eulerAngles;
+        eulerAngles.x = 0;
+        eulerAngles.z = 0;
+
+        transform.rotation = Quaternion.Euler(eulerAngles);
+    }
     IEnumerator SettingPlayerInitialPosition()
     {
         yield return new WaitForEndOfFrame();
@@ -96,7 +105,7 @@ public class PlayerMovement : MonoBehaviour
         
         return uniqueXCellPath;
 
-        //this nested Function are checking if the cell can be used by the enemy
+        //this nested Function are checking if the cell can be used by the Player
         Vector3 cellPath(float xPosition, float zPosition)
         {
             int xOffsetWithSelectedCell = Convert.ToInt16(selectedCell.x - xPosition);

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-static public class CombatSystem
+public class CombatSystem : MonoBehaviour
 {
 
     
@@ -14,7 +14,12 @@ static public class CombatSystem
     
      public static void PlayerAttack(Spells.Spell spell, List<Vector3> selectedCells)
     {
+        selectedPlayer.GetComponent<PlayerMovement>().RotatePlayerBasedOnTargetCell(selectedCells[0]);
+        GameObject spellVFX = GameObject.Find(spell.spellPrefabsName);
         GameObject[] potentialsEnemy = GameObject.FindGameObjectsWithTag("Enemy");
+        
+        Instantiate(spellVFX, selectedPlayer.transform.position, selectedPlayer.transform.rotation);
+
         foreach (GameObject enemy in potentialsEnemy)
             {
                 foreach(Vector3 cell in selectedCells)
